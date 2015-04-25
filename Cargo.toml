@@ -1,0 +1,7 @@
+[package]
+name = "irc-channel"
+version = "0.1.0"
+authors = ["Ty Overby <ty@pre-alpha.com>"]
+
+[dependencies]
+irc_message = "*"
