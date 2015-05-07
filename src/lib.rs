@@ -1,10 +1,12 @@
 extern crate irc_message;
+extern crate many2many;
 
 use std::io::Result as IoResult;
-use std::io::{LineWriter, Write, BufStream, BufRead};
+use std::io::{LineWriter, Write, BufReader, BufWriter, BufRead};
 use std::thread;
 use std::net::{ToSocketAddrs, TcpStream};
-use std::sync::mpsc::{channel, Receiver};
+use std::sync::mpsc::channel;
+use many2many::MReceiver;
 use std::hash::Hash;
 
 use irc_message::IrcMessage;
@@ -34,7 +36,7 @@ impl Drop for Sender {
 }
 
 pub fn irc_channel<A: ToSocketAddrs>(address: A, auto_pong: bool)
--> IoResult<(Sender, Receiver<IrcMessage<String>>)> {
+-> IoResult<(Sender, MReceiver<IrcMessage<String>>)> {
     let conn1 = try!(TcpStream::connect(address));
     let conn2 = try!(conn1.try_clone());
     let conn3 = try!(conn1.try_clone());
@@ -42,8 +44,8 @@ pub fn irc_channel<A: ToSocketAddrs>(address: A, auto_pong: bool)
     let (sx, rx) = channel();
 
     thread::spawn(move || {
-        let buf_stream = BufStream::new(conn2);
-        let mut out_buf_stream = BufStream::new(conn3);
+        let buf_stream = BufReader::new(conn2);
+        let mut out_buf_stream = BufWriter::new(conn3);
         for line in buf_stream.lines() {
             match line {
                 Ok(line) => {
@@ -69,6 +71,5 @@ pub fn irc_channel<A: ToSocketAddrs>(address: A, auto_pong: bool)
 
     Ok((Sender {
         stream: LineWriter::new(conn1)
-    }, rx))
+    }, MReceiver::from(rx)))
 }
-

@@ -1,7 +1,13 @@
 [package]
 name = "irc-channel"
-version = "0.1.0"
+version = "0.1.1"
 authors = ["Ty Overby <ty@pre-alpha.com>"]
+license = "MIT"
+description = "A channel-like API for an IRC client."
+
+[dependencies.irc_message]
+path = "../irc-message"
 
 [dependencies]
-irc_message = "*"
+#irc_message = "*"
+many2many = "*"
