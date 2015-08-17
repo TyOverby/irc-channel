@@ -2,6 +2,7 @@
 name = "irc-channel"
 version = "0.1.1"
 authors = ["Ty Overby <ty@pre-alpha.com>"]
+repository = "https://github.com/TyOverby/irc-channel"
 license = "MIT"
 description = "A channel-like API for an IRC client."
 
